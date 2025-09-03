@@ -1,54 +1,50 @@
-//This line of codes ensure that the code runs only after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-
-    // Step 1: Select the form and feedback div elements
-    //selecting the form and feedback div elements
     const form = document.getElementById('registration-form');
-    const feedbackDiv = document.getElementById('feedback');
+    const feedbackDiv = document.getElementById('form-feedback');
 
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-
-    // Step 2: Add event listener for form submission
-    //adding an event listener to the form for the submit event
-    form.addEventListener('submit',  function(event){
-        
-        //preventing the default form submission behavior
+    form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-    // Step 3: Retrieve and trim input values
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
 
-    const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+        let isValid = true;
+        let messages = [];
 
-    // Step 4: Validate input values
+        // Username validation
+        if (username.length < 3) {
+            isValid = false;
+            messages.push('Username must be at least 3 characters long.');
+        }
 
-    let isValid = true;
-    let messages = [];
+        // Email validation with regex
+        if (!emailRegex.test(email)) {
+            isValid = false;
+            messages.push('Please enter a valid email address.');
+        }
 
-    //step 4a: Validate username
-    
-    if (username.length < 3){
-        isValid = false;
-        messages.push('Username must be at least 3 characters long.');
-    }
+        // Password validation - making it consistent with error message
+        if (password.length < 6) {
+            isValid = false;
+            messages.push('Password must be at least 6 characters long.');
+        }
 
-    //step 4b: Validate email using a simple regex pattern
-    if (!email.includes('@') || !email.includes('.')){
-        isValid = false;
-        messages.push('Please enter a valid email address.');
-    }
+        // Feedback display
+        feedbackDiv.style.display = 'block';
 
-    //step 4c: Validate password
-    if (password.length < 8){
-        isValid = false;
-        messages.push('Password must be at least 6 characters long.');
-    }
-
-    // Step 5: Provide feedback to the user
-    
-
-
-
-
-}
+        if (isValid) {
+            feedbackDiv.style.color = '#28a745';
+            feedbackDiv.textContent = 'Registration successful!'; // Using textContent instead of innerHTML
+            form.reset();
+        } else {
+            feedbackDiv.style.color = "#dc3545";
+            feedbackDiv.style.backgroundColor = "#f8d7da";
+            // Safer way to display messages
+            feedbackDiv.textContent = messages.join(' ');
+        }
+    });
+});
